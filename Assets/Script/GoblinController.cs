@@ -15,6 +15,7 @@ public class GoblinController : MonoBehaviour
 
     public State CharacterState;
     public bool IsAlerted;
+    public bool IsSelected;
 
     private Animator animator;
     private Vector3 target;
@@ -28,6 +29,7 @@ public class GoblinController : MonoBehaviour
         CharacterState = State.Standing;
 
         IsAlive = true;
+        IsSelected = false;
     }
 
     public float RotationSpeed = 360.0f;
@@ -46,6 +48,29 @@ public class GoblinController : MonoBehaviour
         if (IsAlive)
         {
             var distance = target - this.transform.position;
+
+            foreach (var mesh in GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                var materialPropertyBlock = new MaterialPropertyBlock();
+
+                if (IsSelected)
+                    materialPropertyBlock.SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                else
+                    materialPropertyBlock.SetColor("_EmissionColor", new Color(0, 0, 0));
+
+                mesh.SetPropertyBlock(materialPropertyBlock);
+            }
+            foreach (var mesh in GetComponentsInChildren<MeshRenderer>())
+            {
+                var materialPropertyBlock = new MaterialPropertyBlock();
+
+                if (IsSelected)
+                    materialPropertyBlock.SetColor("_EmissionColor", new Color(0.2f, 0.2f, 0.2f));
+                else
+                    materialPropertyBlock.SetColor("_EmissionColor", new Color(0, 0, 0));
+
+                mesh.SetPropertyBlock(materialPropertyBlock);
+            }
 
             if (distance.sqrMagnitude > MinDistance * MinDistance)
             {

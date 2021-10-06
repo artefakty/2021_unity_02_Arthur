@@ -12,6 +12,7 @@ When | Where | What
 :---: | :---: | :---:
 6:00PM - 7:30PM, April 27th, 2021|Faculty of Physics, University of Lodz (online, MS Teams)|First workshop of intermediate info about Unity
 6:00PM - 7:30PM, May 4th, 2021|Faculty of Physics, University of Lodz (online, MS Teams)|Second workshop of intermediate info about Unity
+6:00PM - 7:30PM, May 11th, 2021|Faculty of Physics, University of Lodz (online, MS Teams)|Third workshop of intermediate info about Unity
 
 # Contact information
 

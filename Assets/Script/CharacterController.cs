@@ -10,7 +10,8 @@ public class CharacterController : MonoBehaviour
     public enum State
     {
         Standing = 0,
-        Walking = 1
+        Walking = 1,
+        Attacking = 2 // Dokładamy nowy attacking
     }
 
     public State CharacterState;
@@ -41,14 +42,14 @@ public class CharacterController : MonoBehaviour
         {
             animator.SetInteger("State", (int) CharacterState);
 
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             if (Input.GetKeyDown(KeyCode.F))
                 IsAlive = false;
 
 
             if (Input.GetMouseButton(0))
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
                 if (Physics.Raycast(ray, out var hit))
                 {
                     if (Input.GetMouseButtonDown(0))
@@ -62,8 +63,21 @@ public class CharacterController : MonoBehaviour
             }
 
             var distance = target - this.transform.position;
-            
-            if (distance.sqrMagnitude > MinDistance * MinDistance)
+
+            if (Input.GetMouseButton(1)) // Prawy klawisz
+            {
+                if (Physics.Raycast(ray, out var hit))
+                {
+                    target = transform.position;    // Wyzeruj cel - na potrzeby chodu
+                    CharacterState = State.Attacking; // Zmień stan na atak
+
+                    var direction = hit.point - this.transform.position; // Określ kierunek
+                    var desiredAzimuth = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg; // I obróc się w kierunku
+                    azimuth = Mathf.MoveTowardsAngle(azimuth, desiredAzimuth, RotationSpeed * Time.deltaTime);
+
+                }
+            }
+            else if (distance.sqrMagnitude > MinDistance * MinDistance)
             {
                 var desiredAzimuth = Mathf.Atan2(distance.x, distance.z) * Mathf.Rad2Deg;
 
