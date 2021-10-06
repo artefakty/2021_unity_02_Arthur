@@ -8,6 +8,8 @@ Welcome to official *SKN Artefakty* github repository. These files contains all 
 
 # This repository contains:
 
+![Screenshot](screen.png)
+
 When | Where | What
 :---: | :---: | :---:
 6:00PM - 7:30PM, April 27th, 2021|Faculty of Physics, University of Lodz (online, MS Teams)|First workshop of intermediate info about Unity
