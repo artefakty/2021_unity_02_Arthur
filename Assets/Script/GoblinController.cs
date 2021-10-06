@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
+using NUnit.Framework;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class GoblinController : MonoBehaviour
 {
     private float azimuth;
 
@@ -14,55 +14,39 @@ public class CharacterController : MonoBehaviour
     }
 
     public State CharacterState;
-    public Waypoint MatrixWaypoint;
+    public bool IsAlerted;
 
-    private Vector3 target;
     private Animator animator;
-    
-    void Start()
+    private Vector3 target;
+
+    private void Start()
     {
         animator = this.GetComponent<Animator>();
         azimuth = transform.rotation.eulerAngles.y;
         target = transform.position;
+
+        CharacterState = State.Standing;
 
         IsAlive = true;
     }
 
     public float RotationSpeed = 360.0f;
     public float WalkSpeed = 10.0f;
+    public float RunSpeed = 10.0f;
     public float MinDistance = 0.1f;
+
+    public float MinWanderDistance = 1.5f;
+    public float MaxWanderDistance = 5.0f;
 
     private bool IsAlive;
 
-    void Update()
+    private void Update()
     {
         animator.SetBool("IsAlive", IsAlive);
         if (IsAlive)
         {
-            animator.SetInteger("State", (int) CharacterState);
-
-            if (Input.GetKeyDown(KeyCode.F))
-                IsAlive = false;
-
-
-            if (Input.GetMouseButton(0))
-            {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out var hit))
-                {
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        var waypoint = Instantiate(MatrixWaypoint, hit.point, Quaternion.identity);
-                        waypoint.SetColor(Color.green);
-                    }
-                    
-                    target = hit.point;
-                }
-            }
-
             var distance = target - this.transform.position;
-            
+
             if (distance.sqrMagnitude > MinDistance * MinDistance)
             {
                 var desiredAzimuth = Mathf.Atan2(distance.x, distance.z) * Mathf.Rad2Deg;
@@ -71,14 +55,28 @@ public class CharacterController : MonoBehaviour
 
                 CharacterState = State.Walking;
 
-                transform.position += transform.forward * WalkSpeed * Time.deltaTime;
+                if(IsAlerted)
+                    GetComponent<Rigidbody>().position += transform.forward * RunSpeed * Time.deltaTime;
+                else
+                    GetComponent<Rigidbody>().position += transform.forward * WalkSpeed * Time.deltaTime;
             }
             else
             {
+                if (!IsAlerted)
+                {
+                    target = transform.position + Quaternion.Euler(0, Random.Range(0.0f, 360.0f), 0) * Vector3.forward * Random.Range(MinWanderDistance, MaxWanderDistance);
+                }
                 CharacterState = State.Standing;
             }
 
-            transform.rotation = Quaternion.Euler(0, azimuth, 0);
+            if (IsAlerted)
+            {
+                target = FindObjectOfType<CharacterController>().transform.position;
+            }
+
+            animator.SetBool("IsAlerted", IsAlerted);
+            animator.SetInteger("State", (int) CharacterState);
         }
+        transform.rotation = Quaternion.Euler(0, azimuth, 0);
     }
 }
