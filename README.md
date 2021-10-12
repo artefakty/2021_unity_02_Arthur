@@ -1,4 +1,4 @@
-<p align="center"><img src="http://artefakty.com.pl/logo.png" alt="Artefakty"></p>
+<p align="center"><img src="https://artefakty.com.pl/logo.png" alt="Artefakty"></p>
 
 ---
 
